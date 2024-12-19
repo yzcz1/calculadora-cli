@@ -1,0 +1,74 @@
+YOUNESS ZAHID CHRIF PRACTICA 9 DCA
+
+Proceso de detección de fallos con git bisect
+
+Descripción del fallo:
+El fallo consistía en la eliminación de la validación para evitar la división por cero en la función division del archivo calculadora.py. Esto provocó que el programa permitiera realizar divisiones por cero, generando un error de tipo ZeroDivisionError.
+
+Pasos realizados:
+
+1. Iniciar el proceso de bisección:
+Se inició el proceso de bisección para identificar el commit que introdujo el fallo:
+git bisect start
+
+2. Marcar el último commit como "malo":
+El último commit conocido tenía el fallo, por lo que fue marcado como "malo":
+git bisect bad
+
+3. Marcar un commit anterior como "bueno":
+Un commit previo donde el fallo no existía fue identificado y marcado como "bueno":
+git bisect good ea62c67668481f8dd509cb09c0ddc774cfdcc228
+
+4. Pruebas realizadas en cada commit:
+Git comenzó a moverse entre commits intermedios para que pudieran realizarse pruebas. En cada commit, se ejecutó el siguiente comando para verificar si el fallo estaba presente:
+python3 -c "from calculadora import division; print(division(10, 0))"
+
+Si el programa generaba un error apropiado (ValueError), el commit era marcado como "bueno":
+git bisect good
+
+Si el programa permitía la división por cero o generaba otro comportamiento incorrecto, el commit era marcado como "malo":
+git bisect bad
+
+5. Resultado del proceso:
+Después de realizar las pruebas, Git identificó el siguiente commit como el que introdujo el fallo:
+7fc926861ec2760cb54b9dc2895ecf3089d693d1 Introduce un fallo en la función division eliminando la validación de división por cero
+
+6. Finalizar el proceso de bisección:
+Una vez identificado el commit problemático, se finalizó el proceso de bisección con:
+git bisect reset
+
+
+
+Conclusion:
+El proceso de bisección fue útil para reducir rápidamente el rango de commits sospechosos y localizar con precisión el cambio que introdujo el error.
+
+
+
+
+
+Uso de hooks en Git:
+
+Se configuró un hook pre-commit en el archivo .git/hooks/pre-commit. Este hook revisa automáticamente si el archivo calculadora.py tiene errores de sintaxis antes de permitir realizar un commit. Si hay errores, detiene el proceso y muestra un mensaje con el error detectado.
+
+Pasos realizados:
+1. Se creó el archivo .git/hooks/pre-commit.
+2. Se añadió un script para verificar errores de sintaxis en calculadora.py.
+3. Se probaron casos con errores y sin errores para confirmar el funcionamiento del hook.
+
+Comando utilizado:
+python3 -m py_compile calculadora.py
+
+
+Ejemplo de cuando falla:
+
+
+	20:43 calculadora-cli (main) $ git add calculadora.py
+	20:43 calculadora-cli (main) $ git commit -m "Probando el hook pre-commit"
+	Ejecutando el hook pre-commit...
+	Sorry: IndentationError: unexpected indent (calculadora.py, line 12)Error: calculadora.py tiene errores de sintaxis. Corrige antes de hacer commit.
+	20:43 calculadora-cli (main) $ 
+
+
+
+
+
