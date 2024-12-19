@@ -9,9 +9,8 @@ def multiplicacion(a, b):
     return a * b
 
 def division(a, b):
-    if b == 0:
-        raise ValueError("No se puede dividir entre cero")
-    return a / b
+    return a / b  # Eliminamos la validación de b == 0
+
 
 if __name__ == "__main__":
     print("Bienvenido a la calculadora CLI.")
