@@ -10,6 +10,10 @@ def multiplicacion(a, b):
 
 def division(a, b):
     return a / b  # Eliminamos la validación de b == 0
+    
+def potencia(a, b):
+    return a ** b
+
 
 
 if __name__ == "__main__":
